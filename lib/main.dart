@@ -1,28 +1,35 @@
 // ignore_for_file: avoid_print
 
+import 'isolates_and_async.dart';
+
 import 'dart:io';
 
-import 'package:encrypt/encrypt.dart';
-import 'isolates_and_async.dart';
-import 'dart:isolate';
-
 void main() async {
-  print("Code is executing");
+  File encrFile = File('C:\\Users\\Elvin\\Desktop\\encrFile.txt');
+  File decrFile = File('C:\\Users\\Elvin\\Desktop\\decrFile.txt');
 
-  EncryptData.encryptInBackground("hii").then((encrypted) => {
-        EncryptData.decryptInBackground(encrypted)
-            .then((decrypted) => {print(decrypted)})
+  operateMessage("hello", encrFile, decrFile);
+  operateMessage("hey", encrFile, decrFile);
+
+  print("bruh");
+}
+
+void operateMessage(String message, File encrFile, File decrFile) {
+  EncryptData.encryptInBackground(message).then((encrypted) => {
+        encrFile.writeAsStringSync(encrypted.base64 + '\n',
+            mode: FileMode.append), // appending file
+
+        EncryptData.decryptInBackground(encrypted).then((decrypted) => {
+              decrFile.writeAsStringSync(decrypted + '\n',
+                  mode: FileMode.append), // appending file
+            })
       });
-
-  print("Start counting");
-  // some routine, to show that the isolate is working
-  for (int i = 1; i <= 10; i++) {
-    await Future.delayed(Duration(seconds: 1), () => {print(i)});
-  }
 }
 
 void filing() {
   File myFile = File('C:\\Users\\Elvin\\Desktop\\myFile.txt');
+
   myFile.writeAsStringSync("hello,");
-  myFile.writeAsStringSync("hi man", mode: FileMode.append);
+
+  myFile.writeAsStringSync("\nhi man", mode: FileMode.append);
 }

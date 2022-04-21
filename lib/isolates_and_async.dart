@@ -33,7 +33,14 @@ class EncryptData {
     final encrypter = Encrypter(AES(key));
     _encrypted = encrypter.encrypt(plainText, iv: iv);
 
-    Isolate.exit(sendPort, _encrypted);
+    Future.delayed(
+        Duration(seconds: 1),
+        () => {
+              Isolate.exit(sendPort, _encrypted),
+            });
+
+    // OR without delay:
+    // Isolate.exit(sendPort, _encrypted);
   }
 
   static _decryptAES(List<dynamic> data) {
@@ -46,7 +53,7 @@ class EncryptData {
     _decrypted = encrypter.decrypt(encrypted!, iv: iv);
 
     Future.delayed(
-        Duration(seconds: 5),
+        Duration(seconds: 1),
         () => {
               Isolate.exit(sendPort, _decrypted),
             });
