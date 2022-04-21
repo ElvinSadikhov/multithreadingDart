@@ -1,10 +1,13 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:encrypt/encrypt.dart';
 import 'isolates_and_async.dart';
 import 'dart:isolate';
 
 void main() async {
+  /*
   // 1st way: (actually it is not the way, just we await for the first call)
   // Encrypted encrypted = await encryptInBackground("wha's up");
   // decryptInBackground(encrypted).then((decrypted) => {print(decrypted)});
@@ -20,6 +23,10 @@ void main() async {
   for (int i = 1; i <= 10; i++) {
     await Future.delayed(Duration(seconds: 1), () => {print(i)});
   }
+  */
+  File myFile = File('C:\\Users\\Elvin\\Desktop\\myFile.txt');
+  myFile.writeAsStringSync("hello,");
+  myFile.writeAsStringSync("hi man", mode: FileMode.append);
 }
 
 Future<Encrypted> encryptInBackground(String message) async {
