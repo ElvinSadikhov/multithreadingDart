@@ -33,14 +33,14 @@ class EncryptData {
     final encrypter = Encrypter(AES(key));
     _encrypted = encrypter.encrypt(plainText, iv: iv);
 
-    Future.delayed(
-        Duration(seconds: 1),
-        () => {
-              Isolate.exit(sendPort, _encrypted),
-            });
+    // Future.delayed(
+    //     Duration(seconds: 1),
+    //     () => {
+    //           Isolate.exit(sendPort, _encrypted),
+    //         });
 
     // OR without delay:
-    // Isolate.exit(sendPort, _encrypted);
+    Isolate.exit(sendPort, _encrypted);
   }
 
   static _decryptAES(List<dynamic> data) {
@@ -52,13 +52,13 @@ class EncryptData {
     final encrypter = Encrypter(AES(key));
     _decrypted = encrypter.decrypt(encrypted!, iv: iv);
 
-    Future.delayed(
-        Duration(seconds: 1),
-        () => {
-              Isolate.exit(sendPort, _decrypted),
-            });
+    // Future.delayed(
+    //     Duration(seconds: 1),
+    //     () => {
+    //           Isolate.exit(sendPort, _decrypted),
+    //         });
 
     // OR without delay:
-    // Isolate.exit(sendPort, decrypted);
+    Isolate.exit(sendPort, _decrypted);
   }
 }
