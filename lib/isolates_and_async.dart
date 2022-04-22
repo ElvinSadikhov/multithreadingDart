@@ -6,7 +6,7 @@ import 'dart:isolate';
 
 import 'package:encrypt/encrypt.dart';
 
-class EncryptData {
+class EncryptDecryptData {
 //for AES Algorithms
 
   static Encrypted? _encrypted;
@@ -14,13 +14,15 @@ class EncryptData {
 
   static Future<Encrypted> encryptInBackground(String message) async {
     final receivePort = ReceivePort();
-    Isolate.spawn(EncryptData._encryptAES, [receivePort.sendPort, message]);
+    Isolate.spawn(
+        EncryptDecryptData._encryptAES, [receivePort.sendPort, message]);
     return await receivePort.first;
   }
 
   static Future<String> decryptInBackground(Encrypted encrypted) async {
     final receivePort = ReceivePort();
-    Isolate.spawn(EncryptData._decryptAES, [receivePort.sendPort, encrypted]);
+    Isolate.spawn(
+        EncryptDecryptData._decryptAES, [receivePort.sendPort, encrypted]);
     return await receivePort.first;
   }
 
