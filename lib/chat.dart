@@ -3,29 +3,23 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:encrypt/encrypt.dart';
-import 'package:flutter_application_1/another_method.dart';
-import 'package:flutter_application_1/encryption_decryption.dart';
 
 import 'consts.dart';
-import 'encryption_decryption.dart';
-import 'isolates_and_async.dart';
+import 'encr_decr_class.dart';
 
 class Chat {
   static File? _allMessages;
-  static File? _encryptedValues;
-  static String _encrDecrMethod = Consts.AES; // deafult
+  static File? _encryptedMessages;
 
   static void _createFiles() {
     File("C:\\Users\\Elvin\\Desktop\\tempFile.txt").create();
     File("C:\\Users\\Elvin\\Desktop\\encrFile.txt").create();
 
     _allMessages = File("C:\\Users\\Elvin\\Desktop\\tempFile.txt");
-    _encryptedValues = File("C:\\Users\\Elvin\\Desktop\\encrFile.txt");
+    _encryptedMessages = File("C:\\Users\\Elvin\\Desktop\\encrFile.txt");
   }
 
-  static void start(String methodName) {
-    _encrDecrMethod = methodName;
-
+  static void start() {
     String? _message;
 
     _welcoming();
@@ -36,15 +30,15 @@ class Chat {
 
       switch (_message) {
         case Consts.BACKUP:
-          Isolate.spawn(_backup, [_allMessages!, _encryptedValues!]);
+          Isolate.spawn(_backup, [_allMessages!, _encryptedMessages!]);
           break;
 
         case Consts.RESTORE:
-          Isolate.spawn(_restore, _encryptedValues!);
+          Isolate.spawn(_restore, _encryptedMessages!);
           break;
 
         case Consts.CLOSE:
-          _close();
+          _terminateFiles();
           break;
 
         default:
@@ -62,9 +56,9 @@ class Chat {
         "> In order to exit program, type \"-close\"");
   }
 
-  static void _close() {
+  static void _terminateFiles() {
     print("You typed: -close");
-    _deleteFile([_allMessages, _encryptedValues]);
+    _deleteFile([_allMessages, _encryptedMessages]);
     print("All data is deleted!");
   }
 
@@ -83,25 +77,13 @@ class Chat {
     }
 
     for (String line in file.readAsLinesSync()) {
-      // Encrypted value = await EncryptDecryptData.encryptInBackground(line);
-
-      // if (isFirstTime) {
-      //   encrFile.writeAsStringSync(value.base64 + '\n');
-      //   isFirstTime = false;
-      // } else {
-      //   encrFile.writeAsStringSync(value.base64 + '\n', mode: FileMode.append);
-      // }
-      String value = "";
-      if (_encrDecrMethod == Consts.AES)
-        value = EncryptDecryptData.encryptData(line);
-      else if (_encrDecrMethod == Consts.HILL_CIPHER)
-        value = HillCipher.encryptData(line);
+      Encrypted value = await EncryptDecryptData.encryptInBackground(line);
 
       if (isFirstTime) {
-        encrFile.writeAsStringSync(value + '\n');
+        encrFile.writeAsStringSync(value.base64 + '\n');
         isFirstTime = false;
       } else {
-        encrFile.writeAsStringSync(value + '\n', mode: FileMode.append);
+        encrFile.writeAsStringSync(value.base64 + '\n', mode: FileMode.append);
       }
     }
 
@@ -116,15 +98,12 @@ class Chat {
       return;
     }
 
+    await Future.delayed(Duration(seconds: 1)); // for creating some delay!
+
     print("Saved messages are:");
     for (String line in encrValues.readAsLinesSync()) {
-      // String value =
-      //     await EncryptDecryptData.decryptInBackground(Encrypted.from64(line));
-      String value = "";
-      if (_encrDecrMethod == Consts.AES)
-        value = EncryptDecryptData.decryptData(line);
-      else if (_encrDecrMethod == Consts.HILL_CIPHER)
-        value = HillCipher.decryptData(line);
+      String value =
+          await EncryptDecryptData.decryptInBackground(Encrypted.from64(line));
 
       print(value);
     }
