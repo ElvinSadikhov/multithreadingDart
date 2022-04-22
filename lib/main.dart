@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'package:flutter_application_1/consts.dart';
+
 import 'isolates_and_async.dart';
 import 'chat.dart';
 
@@ -14,17 +16,17 @@ void main() {
 
   // print("bruh");
 
-  Chat.start();
+  Chat.start(Consts.AES);
 }
 
-void operateMessage(String message, File encrFile, File decrFile) {
-  EncryptData.encryptInBackground(message).then((encrypted) => {
-        encrFile.writeAsStringSync(encrypted.base64 + '\n',
-            mode: FileMode.append), // appending file
+// void operateMessage(String message, File encrFile, File decrFile) {
+//   EncryptDecryptData.encryptInBackground(message).then((encrypted) => {
+//         encrFile.writeAsStringSync(encrypted.base64 + '\n',
+//             mode: FileMode.append), // appending file
 
-        EncryptData.decryptInBackground(encrypted).then((decrypted) => {
-              decrFile.writeAsStringSync(decrypted + '\n',
-                  mode: FileMode.append), // appending file
-            })
-      });
-}
+//         EncryptDecryptData.decryptInBackground(encrypted).then((decrypted) => {
+//               decrFile.writeAsStringSync(decrypted + '\n',
+//                   mode: FileMode.append), // appending file
+//             })
+//       });
+// }

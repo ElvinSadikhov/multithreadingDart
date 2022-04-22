@@ -5,7 +5,9 @@ library flutter_application_1;
 import 'dart:isolate';
 
 import 'package:encrypt/encrypt.dart';
+import 'package:flutter_application_1/encryption_decryption.dart';
 
+/*
 class EncryptDecryptData {
 //for AES Algorithms
 
@@ -62,5 +64,34 @@ class EncryptDecryptData {
 
     // OR without delay:
     Isolate.exit(sendPort, _decrypted);
+  }
+}
+*/
+
+class EncryptDecryptData implements EncrDecrData {
+//for AES Algorithms
+
+  static Encrypted? encrypted;
+  static var decrypted;
+
+  @override
+  static String encryptData(plainText) {
+    final key = Key.fromUtf8('my 32 length key................');
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    encrypted = encrypter.encrypt(plainText, iv: iv);
+
+    return encrypted!.base64;
+  }
+
+  @override
+  static String decryptData(plainText) {
+    final key = Key.fromUtf8('my 32 length key................');
+    final iv = IV.fromLength(16);
+    final encrypter = Encrypter(AES(key));
+    // decrypted = encrypter.decrypt(encrypted!, iv: iv);
+    decrypted = encrypter.decrypt(Encrypted.from64(plainText), iv: iv);
+
+    return decrypted;
   }
 }
