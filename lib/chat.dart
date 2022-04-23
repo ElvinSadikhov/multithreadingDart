@@ -50,16 +50,16 @@ class Chat {
   }
 
   static void _welcoming() {
-    print("Hello, dear user.\n" +
+    print("> Hello, dear user.\n" +
         "> In order to save messages, type \"-backup\"\n" +
         "> In order to see saved messages, type \"-restore\"\n" +
         "> In order to exit program, type \"-close\"");
   }
 
   static void _terminateFiles() {
-    print("You typed: -close");
+    print("> You typed: -close");
     _deleteFile([_allMessages, _encryptedMessages]);
-    print("All data is deleted!");
+    print("> All data is deleted!");
   }
 
   static void _backup(List<dynamic> args) async {
@@ -67,12 +67,12 @@ class Chat {
     File encrFile = args[1];
     bool isFirstTime = true;
 
-    print("You typed: -backup");
+    print("> You typed: -backup");
 
     await Future.delayed(Duration(seconds: 2)); // for creating some delay!
 
     if (!file.existsSync()) {
-      print("There is not any messages out there!");
+      print("> There is not any messages out there!");
       return;
     }
 
@@ -87,20 +87,20 @@ class Chat {
       }
     }
 
-    print("Data is saved!");
+    print("> Data is saved!");
   }
 
   static void _restore(File encrValues) async {
-    print("You typed: -restore");
+    print("> You typed: -restore");
 
     if (!encrValues.existsSync()) {
-      print("There is not any saved messages out there!");
+      print("> There is not any saved messages out there!");
       return;
     }
 
     await Future.delayed(Duration(seconds: 1)); // for creating some delay!
 
-    print("Saved messages are:");
+    print("> Saved messages are:");
     for (String line in encrValues.readAsLinesSync()) {
       String value =
           await EncryptDecryptData.decryptInBackground(Encrypted.from64(line));
